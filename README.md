@@ -1,12 +1,12 @@
 # GitHub Proxy - Cloudflare Workers
 
-🚀 A GitHub proxy acceleration service deployed on Cloudflare Workers, supporting accelerated access to GitHub repositories, raw files, releases, and more.
+🚀 A GitHub proxy acceleration service deployed on Cloudflare Workers, supporting accelerated access to all GitHub resources.
 
 ## ✨ Features
 
 - ⚡ Accelerated by Cloudflare's global CDN network
 - 🔒 CORS support for cross-origin requests
-- 📦 Support for GitHub repos, raw files, releases, Gists, and API
+- 📦 Support for all GitHub services
 - 🎯 Written in TypeScript with type safety
 - 🚀 One-click deployment to Cloudflare Workers
 - 🔐 Code obfuscation via GitHub Actions
@@ -18,8 +18,6 @@ npm install
 ```
 
 ## 🛠️ Development
-
-Run in local development mode:
 
 ```bash
 npm run dev
@@ -36,65 +34,70 @@ npm run deploy
 ### Option 2: Use Obfuscated Worker
 
 1. Go to GitHub repository > Actions tab
-2. Run "Manual Obfuscate Only" workflow
+2. Run "Generate Obfuscated Worker" workflow
 3. Download `worker.js` from artifacts or check the committed file
 4. Go to Cloudflare Dashboard > Workers & Pages
-5. Create a new Worker or edit existing one
-6. Copy and paste the content of `worker.js`
-7. Deploy
+5. Create a new Worker and paste the content of `worker.js`
 
-## 📖 Usage
+## 📖 Supported Services
 
-### 1. GitHub Repository Proxy
+| Service | Original | Proxied |
+|---------|----------|---------|
+| Repository | `github.com/user/repo` | `github.sky1218.com/github/user/repo` |
+| Raw Files | `raw.githubusercontent.com/...` | `github.sky1218.com/raw/...` |
+| Releases | `github.com/.../releases/download/...` | `github.sky1218.com/release/.../releases/download/...` |
+| API | `api.github.com/...` | `github.sky1218.com/api/...` |
+| Gist | `gist.github.com/...` | `github.sky1218.com/gist/...` |
+| GHCR | `ghcr.io/...` | `github.sky1218.com/ghcr/...` |
+| Codeload | `codeload.github.com/...` | `github.sky1218.com/codeload/...` |
+| Objects | `objects.githubusercontent.com/...` | `github.sky1218.com/objects/...` |
+| Media | `media.githubusercontent.com/...` | `github.sky1218.com/media/...` |
+| Avatars | `avatars.githubusercontent.com/...` | `github.sky1218.com/avatars/...` |
+| Assets | `github.githubassets.com/...` | `github.sky1218.com/assets/...` |
+| Archive | `github.com/.../archive/...` | `github.sky1218.com/archive/.../archive/...` |
+| NPM Pkg | `npm.pkg.github.com/...` | `github.sky1218.com/pkg/...` |
+| Copilot | `copilot-proxy.githubusercontent.com/...` | `github.sky1218.com/copilot/...` |
 
-```
-Original: https://github.com/911218sky/gait-charts
-Proxied: https://github.sky1218.com/github/911218sky/gait-charts
-```
+## 📖 Usage Examples
 
-### 2. Raw File Acceleration
-
-```
-Original: https://raw.githubusercontent.com/911218sky/gait-charts/main/README.md
-Proxied: https://github.sky1218.com/raw/911218sky/gait-charts/main/README.md
-```
-
-### 3. Release Download Acceleration
-
-```
-Original: https://github.com/911218sky/gait-charts/releases/download/v1.2.1/GaitCharts_Setup_v1.2.1.exe
-Proxied: https://github.sky1218.com/release/911218sky/gait-charts/releases/download/v1.2.1/GaitCharts_Setup_v1.2.1.exe
-```
-
-### 4. Git Clone Acceleration
+### Git Clone
 
 ```bash
 git clone https://github.sky1218.com/github/911218sky/gait-charts.git
 ```
 
-### 5. GitHub API Proxy
+### Download Release
 
+```bash
+wget https://github.sky1218.com/release/911218sky/gait-charts/releases/download/v1.2.1/GaitCharts_Setup_v1.2.1.exe
 ```
-Original: https://api.github.com/repos/911218sky/gait-charts
-Proxied: https://github.sky1218.com/api/repos/911218sky/gait-charts
+
+### Docker Pull
+
+```bash
+docker pull github.sky1218.com/ghcr/user/image:latest
+```
+
+### Download ZIP
+
+```bash
+wget https://github.sky1218.com/codeload/user/repo/zip/refs/heads/main
+```
+
+### API Request
+
+```bash
+curl https://github.sky1218.com/api/repos/911218sky/gait-charts
 ```
 
 ## 🔧 Generate Obfuscated Worker
 
-This repository automatically generates an obfuscated version of the worker on every push to main branch:
-
-- **Automatic**: Triggers on every push to main branch
-- **Manual**: Can also be triggered manually from the Actions tab
+This repository automatically generates an obfuscated version of the worker on every push to main branch.
 
 After the workflow completes:
 1. The obfuscated `worker.js` will be committed to the repository
 2. You can download it from the workflow artifacts
 3. Copy and paste the content into Cloudflare Workers dashboard
-
-### Manual Trigger:
-1. Go to the **Actions** tab in your GitHub repository
-2. Select **"Generate Obfuscated Worker"** workflow
-3. Click **"Run workflow"**
 
 ## 📝 Configuration
 

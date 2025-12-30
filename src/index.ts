@@ -3,32 +3,40 @@
  * Accelerate GitHub resource access
  */
 
-interface Env {
-  // Define environment variables here
-}
+interface Env {}
 
-const GITHUB_URL = 'https://github.com';
-const RAW_URL = 'https://raw.githubusercontent.com';
-const GIST_URL = 'https://gist.github.com';
-const API_URL = 'https://api.github.com';
+// GitHub related URLs
+const PROXY_TARGETS: Record<string, string> = {
+  'github': 'https://github.com',
+  'raw': 'https://raw.githubusercontent.com',
+  'gist': 'https://gist.github.com',
+  'api': 'https://api.github.com',
+  'ghcr': 'https://ghcr.io',
+  'codeload': 'https://codeload.github.com',
+  'objects': 'https://objects.githubusercontent.com',
+  'media': 'https://media.githubusercontent.com',
+  'avatars': 'https://avatars.githubusercontent.com',
+  'assets': 'https://github.githubassets.com',
+  'archive': 'https://github.com',
+  'release': 'https://github.com',
+  'pkg': 'https://npm.pkg.github.com',
+  'copilot': 'https://copilot-proxy.githubusercontent.com',
+};
 
 export default {
   async fetch(request: Request, _env: Env, _ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     
-    // Handle favicon requests
     if (url.pathname === '/favicon.ico') {
       return new Response(null, { status: 204 });
     }
     
-    // Handle root path, display usage instructions
     if (url.pathname === '/' || url.pathname === '') {
       return new Response(getUsageHTML(), {
         headers: { 'Content-Type': 'text/html; charset=utf-8' }
       });
     }
 
-    // Parse target URL
     const targetUrl = parseTargetUrl(url);
     
     if (!targetUrl) {
@@ -36,7 +44,6 @@ export default {
     }
 
     try {
-      // Create new request
       const modifiedRequest = new Request(targetUrl, {
         method: request.method,
         headers: request.headers,
@@ -44,10 +51,7 @@ export default {
         redirect: 'follow'
       });
 
-      // Send request to GitHub
       const response = await fetch(modifiedRequest);
-      
-      // Create new response with CORS headers
       const modifiedResponse = new Response(response.body, response);
       modifiedResponse.headers.set('Access-Control-Allow-Origin', '*');
       modifiedResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -60,27 +64,15 @@ export default {
   }
 };
 
-/**
- * Parse target URL
- */
 function parseTargetUrl(url: URL): string | null {
   const path = url.pathname;
   const search = url.search;
-
-  if (path.startsWith('/github/')) {
-    return `${GITHUB_URL}/${path.replace('/github/', '')}${search}`;
-  }
-  if (path.startsWith('/raw/')) {
-    return `${RAW_URL}/${path.replace('/raw/', '')}${search}`;
-  }
-  if (path.startsWith('/gist/')) {
-    return `${GIST_URL}/${path.replace('/gist/', '')}${search}`;
-  }
-  if (path.startsWith('/release/')) {
-    return `${GITHUB_URL}/${path.replace('/release/', '')}${search}`;
-  }
-  if (path.startsWith('/api/')) {
-    return `${API_URL}/${path.replace('/api/', '')}${search}`;
+  
+  for (const [prefix, target] of Object.entries(PROXY_TARGETS)) {
+    if (path.startsWith(`/${prefix}/`)) {
+      const targetPath = path.replace(`/${prefix}/`, '');
+      return `${target}/${targetPath}${search}`;
+    }
   }
   return null;
 }
@@ -127,7 +119,7 @@ function getUsageHTML(): string {
       pointer-events: none;
       z-index: -1;
     }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -260,14 +252,14 @@ function getUsageHTML(): string {
     }
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 20px;
     }
     .card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 28px;
+      padding: 24px;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
@@ -287,73 +279,73 @@ function getUsageHTML(): string {
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
     .card:hover::before { opacity: 1; }
-    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
     .card-icon {
-      width: 44px; height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-tertiary);
-      border-radius: 12px;
-      font-size: 22px;
-    }
-    .card-title { font-size: 17px; font-weight: 600; }
-    .card-subtitle { font-size: 13px; color: var(--text-muted); }
-    .code-example {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .code-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: var(--bg-tertiary);
-      border-bottom: 1px solid var(--border-color);
-    }
-    .code-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-    }
-    .code-body { padding: 14px; overflow-x: auto; }
-    .code-body code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: var(--success);
-      word-break: break-all;
-    }
-    .code-arrow { display: flex; justify-content: center; padding: 8px 0; color: var(--text-muted); }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
-    .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 20px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      transition: all 0.2s;
-    }
-    .feature-item:hover { border-color: var(--border-hover); }
-    .feature-icon {
       width: 40px; height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--bg-tertiary);
       border-radius: 10px;
-      font-size: 18px;
+      font-size: 20px;
     }
-    .feature-text { font-size: 14px; font-weight: 500; }
+    .card-title { font-size: 16px; font-weight: 600; }
+    .card-subtitle { font-size: 12px; color: var(--text-muted); }
+    .code-example {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .code-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .code-body { padding: 12px; overflow-x: auto; }
+    .code-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--success);
+      word-break: break-all;
+    }
+    .code-arrow { display: flex; justify-content: center; padding: 6px 0; color: var(--text-muted); font-size: 14px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .feature-item:hover { border-color: var(--border-hover); }
+    .feature-icon {
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .feature-text { font-size: 13px; font-weight: 500; }
     footer {
       padding: 60px 0;
       border-top: 1px solid var(--border-color);
@@ -422,6 +414,7 @@ function getUsageHTML(): string {
         </div>
       </div>
     </section>
+
     <section id="usage">
       <div class="container">
         <div class="section-header">
@@ -430,6 +423,7 @@ function getUsageHTML(): string {
           <p class="section-desc">Simply replace the GitHub domain with our proxy URL</p>
         </div>
         <div class="cards-grid">
+          <!-- Repository -->
           <div class="card">
             <div class="card-header">
               <div class="card-icon">📦</div>
@@ -439,6 +433,7 @@ function getUsageHTML(): string {
             <div class="code-arrow">↓</div>
             <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/github/user/repo</code></div></div>
           </div>
+          <!-- Raw Files -->
           <div class="card">
             <div class="card-header">
               <div class="card-icon">📄</div>
@@ -448,33 +443,117 @@ function getUsageHTML(): string {
             <div class="code-arrow">↓</div>
             <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/raw/user/repo/main/file</code></div></div>
           </div>
+          <!-- Releases -->
           <div class="card">
             <div class="card-header">
               <div class="card-icon">🚀</div>
               <div><div class="card-title">Releases</div><div class="card-subtitle">Download binaries</div></div>
             </div>
-            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>github.com/.../releases/download/v1.2.1/app.exe</code></div></div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>github.com/user/repo/releases/download/v1.0/app.exe</code></div></div>
             <div class="code-arrow">↓</div>
-            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/release/.../download/v1.2.1/app.exe</code></div></div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/release/user/repo/releases/download/v1.0/app.exe</code></div></div>
           </div>
+          <!-- API -->
           <div class="card">
             <div class="card-header">
               <div class="card-icon">🔌</div>
-              <div><div class="card-title">API</div><div class="card-subtitle">GitHub REST API</div></div>
+              <div><div class="card-title">GitHub API</div><div class="card-subtitle">REST API access</div></div>
             </div>
             <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>api.github.com/repos/user/repo</code></div></div>
             <div class="code-arrow">↓</div>
             <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/api/repos/user/repo</code></div></div>
           </div>
+          <!-- Gist -->
           <div class="card">
             <div class="card-header">
               <div class="card-icon">📝</div>
               <div><div class="card-title">Gist</div><div class="card-subtitle">Code snippets</div></div>
             </div>
-            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>gist.github.com/user/id</code></div></div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>gist.github.com/user/gist-id</code></div></div>
             <div class="code-arrow">↓</div>
-            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/gist/user/id</code></div></div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/gist/user/gist-id</code></div></div>
           </div>
+          <!-- GHCR -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">🐳</div>
+              <div><div class="card-title">Container Registry</div><div class="card-subtitle">Docker images (GHCR)</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>ghcr.io/user/image:latest</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/ghcr/user/image:latest</code></div></div>
+          </div>
+          <!-- Codeload -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">📥</div>
+              <div><div class="card-title">Codeload</div><div class="card-subtitle">Download ZIP/TAR</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>codeload.github.com/user/repo/zip/refs/heads/main</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/codeload/user/repo/zip/refs/heads/main</code></div></div>
+          </div>
+          <!-- Archive -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">🗂️</div>
+              <div><div class="card-title">Archive</div><div class="card-subtitle">Repository archives</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>github.com/user/repo/archive/refs/heads/main.zip</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/archive/user/repo/archive/refs/heads/main.zip</code></div></div>
+          </div>
+          <!-- Avatars -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">👤</div>
+              <div><div class="card-title">Avatars</div><div class="card-subtitle">User profile images</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>avatars.githubusercontent.com/u/12345678</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/avatars/u/12345678</code></div></div>
+          </div>
+          <!-- Objects -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">📎</div>
+              <div><div class="card-title">Objects</div><div class="card-subtitle">Git LFS objects</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>objects.githubusercontent.com/...</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/objects/...</code></div></div>
+          </div>
+          <!-- Media -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">🖼️</div>
+              <div><div class="card-title">Media</div><div class="card-subtitle">Images & media files</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>media.githubusercontent.com/media/user/repo/...</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/media/media/user/repo/...</code></div></div>
+          </div>
+          <!-- Assets -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">🎨</div>
+              <div><div class="card-title">Assets</div><div class="card-subtitle">GitHub static assets</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>github.githubassets.com/assets/...</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/assets/assets/...</code></div></div>
+          </div>
+          <!-- NPM Package -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">📦</div>
+              <div><div class="card-title">NPM Packages</div><div class="card-subtitle">GitHub Package Registry</div></div>
+            </div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Original</span></div><div class="code-body"><code>npm.pkg.github.com/@user/package</code></div></div>
+            <div class="code-arrow">↓</div>
+            <div class="code-example"><div class="code-header"><span class="code-label">Proxied</span></div><div class="code-body"><code>github.sky1218.com/pkg/@user/package</code></div></div>
+          </div>
+          <!-- Git Clone -->
           <div class="card">
             <div class="card-header">
               <div class="card-icon">💻</div>
@@ -485,6 +564,7 @@ function getUsageHTML(): string {
         </div>
       </div>
     </section>
+
     <section id="features">
       <div class="container">
         <div class="section-header">
@@ -501,6 +581,32 @@ function getUsageHTML(): string {
           <div class="feature-item"><div class="feature-icon">🎯</div><span class="feature-text">Zero Config</span></div>
           <div class="feature-item"><div class="feature-icon">🆓</div><span class="feature-text">100% Free</span></div>
           <div class="feature-item"><div class="feature-icon">🛡️</div><span class="feature-text">DDoS Protected</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="supported">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Supported Services</span>
+          <h2 class="section-title">All GitHub Services</h2>
+          <p class="section-desc">Complete proxy support for the entire GitHub ecosystem</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-item"><div class="feature-icon">📦</div><span class="feature-text">/github - Repos</span></div>
+          <div class="feature-item"><div class="feature-icon">📄</div><span class="feature-text">/raw - Raw files</span></div>
+          <div class="feature-item"><div class="feature-icon">📝</div><span class="feature-text">/gist - Gists</span></div>
+          <div class="feature-item"><div class="feature-icon">🔌</div><span class="feature-text">/api - REST API</span></div>
+          <div class="feature-item"><div class="feature-icon">🐳</div><span class="feature-text">/ghcr - Containers</span></div>
+          <div class="feature-item"><div class="feature-icon">📥</div><span class="feature-text">/codeload - ZIP/TAR</span></div>
+          <div class="feature-item"><div class="feature-icon">📎</div><span class="feature-text">/objects - LFS</span></div>
+          <div class="feature-item"><div class="feature-icon">🖼️</div><span class="feature-text">/media - Media</span></div>
+          <div class="feature-item"><div class="feature-icon">👤</div><span class="feature-text">/avatars - Avatars</span></div>
+          <div class="feature-item"><div class="feature-icon">🎨</div><span class="feature-text">/assets - Assets</span></div>
+          <div class="feature-item"><div class="feature-icon">🗂️</div><span class="feature-text">/archive - Archives</span></div>
+          <div class="feature-item"><div class="feature-icon">🚀</div><span class="feature-text">/release - Releases</span></div>
+          <div class="feature-item"><div class="feature-icon">📦</div><span class="feature-text">/pkg - NPM Packages</span></div>
+          <div class="feature-item"><div class="feature-icon">🤖</div><span class="feature-text">/copilot - Copilot</span></div>
         </div>
       </div>
     </section>
