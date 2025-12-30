@@ -1,108 +1,197 @@
-# GitHub Proxy - Cloudflare Workers
+<div align="center">
 
-🚀 A GitHub proxy acceleration service deployed on Cloudflare Workers, supporting accelerated access to all GitHub resources.
+# ⚡ GitHub Proxy
+
+### Lightning-fast GitHub access through Cloudflare's global edge network
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/911218sky/github-poxy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange?logo=cloudflare)](https://workers.cloudflare.com/)
+
+[Live Demo](https://github.sky1218.com) · [Report Bug](https://github.com/911218sky/github-poxy/issues) · [Request Feature](https://github.com/911218sky/github-poxy/issues)
+
+</div>
+
+---
+
+## 🌟 Overview
+
+A high-performance GitHub proxy service deployed on Cloudflare Workers, providing accelerated access to all GitHub resources worldwide. Simply replace the domain and enjoy blazing-fast speeds.
+
+```diff
+- github.com/user/repo
++ github.sky1218.com/github/user/repo
+```
 
 ## ✨ Features
 
-- ⚡ Accelerated by Cloudflare's global CDN network
-- 🔒 CORS support for cross-origin requests
-- 📦 Support for all GitHub services
-- 🎯 Written in TypeScript with type safety
-- 🚀 One-click deployment to Cloudflare Workers
-- 🔐 Code obfuscation via GitHub Actions
+| Feature | Description |
+|---------|-------------|
+| ⚡ **Global CDN** | Powered by Cloudflare's 300+ edge locations |
+| 🔒 **CORS Enabled** | Full cross-origin request support |
+| 📦 **All Services** | Supports repos, releases, API, GHCR, and more |
+| 🎯 **Zero Config** | Just replace the URL and go |
+| 🛡️ **DDoS Protected** | Enterprise-grade security by Cloudflare |
+| 🆓 **100% Free** | No cost, no limits |
 
-## 📦 Installation
+## 🚀 Quick Start
+
+### One-Click Deploy
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/911218sky/github-poxy)
+
+### Manual Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/911218sky/github-poxy.git
+cd github-poxy
+
+# Install dependencies
 npm install
-```
 
-## 🛠️ Development
-
-```bash
+# Development
 npm run dev
-```
 
-## 🚀 Deployment
-
-### Option 1: Manual Deploy
-
-```bash
+# Deploy
 npm run deploy
 ```
 
-### Option 2: Use Obfuscated Worker
+## 📖 Usage
 
-1. Go to GitHub repository > Actions tab
-2. Run "Generate Obfuscated Worker" workflow
-3. Download `worker.js` from artifacts or check the committed file
-4. Go to Cloudflare Dashboard > Workers & Pages
-5. Create a new Worker and paste the content of `worker.js`
+### Supported Services
 
-## 📖 Supported Services
+| Service | Route | Example |
+|---------|-------|---------|
+| **Repository** | `/github/` | `github.sky1218.com/github/user/repo` |
+| **Raw Files** | `/raw/` | `github.sky1218.com/raw/user/repo/main/file.txt` |
+| **Releases** | `/release/` | `github.sky1218.com/release/user/repo/releases/download/v1.0/app.exe` |
+| **API** | `/api/` | `github.sky1218.com/api/repos/user/repo` |
+| **Gist** | `/gist/` | `github.sky1218.com/gist/user/gist-id` |
+| **GHCR** | `/ghcr/` | `github.sky1218.com/ghcr/user/image:latest` |
+| **Codeload** | `/codeload/` | `github.sky1218.com/codeload/user/repo/zip/refs/heads/main` |
+| **Avatars** | `/avatars/` | `github.sky1218.com/avatars/u/12345678` |
+| **Objects** | `/objects/` | `github.sky1218.com/objects/...` |
+| **Media** | `/media/` | `github.sky1218.com/media/...` |
+| **Assets** | `/assets/` | `github.sky1218.com/assets/...` |
+| **Archive** | `/archive/` | `github.sky1218.com/archive/user/repo/archive/main.zip` |
+| **NPM Pkg** | `/pkg/` | `github.sky1218.com/pkg/...` |
+| **Copilot** | `/copilot/` | `github.sky1218.com/copilot/...` |
 
-| Service | Original | Proxied |
-|---------|----------|---------|
-| Repository | `github.com/user/repo` | `github.sky1218.com/github/user/repo` |
-| Raw Files | `raw.githubusercontent.com/...` | `github.sky1218.com/raw/...` |
-| Releases | `github.com/.../releases/download/...` | `github.sky1218.com/release/.../releases/download/...` |
-| API | `api.github.com/...` | `github.sky1218.com/api/...` |
-| Gist | `gist.github.com/...` | `github.sky1218.com/gist/...` |
-| GHCR | `ghcr.io/...` | `github.sky1218.com/ghcr/...` |
-| Codeload | `codeload.github.com/...` | `github.sky1218.com/codeload/...` |
-| Objects | `objects.githubusercontent.com/...` | `github.sky1218.com/objects/...` |
-| Media | `media.githubusercontent.com/...` | `github.sky1218.com/media/...` |
-| Avatars | `avatars.githubusercontent.com/...` | `github.sky1218.com/avatars/...` |
-| Assets | `github.githubassets.com/...` | `github.sky1218.com/assets/...` |
-| Archive | `github.com/.../archive/...` | `github.sky1218.com/archive/.../archive/...` |
-| NPM Pkg | `npm.pkg.github.com/...` | `github.sky1218.com/pkg/...` |
-| Copilot | `copilot-proxy.githubusercontent.com/...` | `github.sky1218.com/copilot/...` |
 
-## 📖 Usage Examples
+### Examples
 
-### Git Clone
+<details>
+<summary><b>🔧 Git Clone</b></summary>
 
 ```bash
-git clone https://github.sky1218.com/github/911218sky/gait-charts.git
+git clone https://github.sky1218.com/github/user/repo.git
 ```
+</details>
 
-### Download Release
+<details>
+<summary><b>📥 Download Release</b></summary>
 
 ```bash
-wget https://github.sky1218.com/release/911218sky/gait-charts/releases/download/v1.2.1/GaitCharts_Setup_v1.2.1.exe
-```
+# Using wget
+wget https://github.sky1218.com/release/user/repo/releases/download/v1.0/app.exe
 
-### Docker Pull
+# Using curl
+curl -LO https://github.sky1218.com/release/user/repo/releases/download/v1.0/app.exe
+```
+</details>
+
+<details>
+<summary><b>🐳 Docker Pull</b></summary>
 
 ```bash
 docker pull github.sky1218.com/ghcr/user/image:latest
 ```
+</details>
 
-### Download ZIP
+<details>
+<summary><b>📦 Download ZIP</b></summary>
 
 ```bash
 wget https://github.sky1218.com/codeload/user/repo/zip/refs/heads/main
 ```
+</details>
 
-### API Request
+<details>
+<summary><b>🔌 API Request</b></summary>
 
 ```bash
-curl https://github.sky1218.com/api/repos/911218sky/gait-charts
+# Get repository info
+curl https://github.sky1218.com/api/repos/user/repo
+
+# Get user info
+curl https://github.sky1218.com/api/users/username
+```
+</details>
+
+<details>
+<summary><b>📄 Raw File</b></summary>
+
+```bash
+curl https://github.sky1218.com/raw/user/repo/main/README.md
+```
+</details>
+
+## 🔐 Obfuscated Worker
+
+This repository automatically generates an obfuscated version of the worker on every push to main branch via GitHub Actions.
+
+**To use the obfuscated worker:**
+
+1. Go to **Actions** tab → Run "Generate Obfuscated Worker" workflow
+2. Download `worker.js` from artifacts (or check the committed file)
+3. Go to **Cloudflare Dashboard** → Workers & Pages
+4. Create a new Worker and paste the content
+
+## 🛠️ Configuration
+
+Edit `wrangler.toml` to customize your deployment:
+
+```toml
+name = "github-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
 ```
 
-## 🔧 Generate Obfuscated Worker
+## 📁 Project Structure
 
-This repository automatically generates an obfuscated version of the worker on every push to main branch.
+```
+github-poxy/
+├── src/
+│   ├── index.ts      # Main entry point
+│   ├── proxy.ts      # Proxy logic
+│   ├── html.ts       # Landing page
+│   └── config.ts     # Configuration
+├── wrangler.toml     # Cloudflare config
+└── package.json
+```
 
-After the workflow completes:
-1. The obfuscated `worker.js` will be committed to the repository
-2. You can download it from the workflow artifacts
-3. Copy and paste the content into Cloudflare Workers dashboard
+## 🤝 Contributing
 
-## 📝 Configuration
+Contributions are welcome! Feel free to:
 
-Edit the `wrangler.toml` file to configure your Worker name and other settings.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**[⬆ Back to Top](#-github-proxy)**
+
+Made with ❤️ by [911218sky](https://github.com/911218sky)
+
+</div>
