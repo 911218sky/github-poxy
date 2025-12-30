@@ -1,5 +1,6 @@
 node_modules/
 dist/
+obfuscated/
 .wrangler/
 .dev.vars
 *.log
