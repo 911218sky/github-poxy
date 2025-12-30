@@ -78,6 +78,9 @@ npm run deploy
 | **Archive** | `/archive/` | `github.sky1218.com/archive/user/repo/archive/main.zip` |
 | **NPM Pkg** | `/pkg/` | `github.sky1218.com/pkg/...` |
 | **Copilot** | `/copilot/` | `github.sky1218.com/copilot/...` |
+| **Docker Registry** | `/docker/` | `github.sky1218.com/docker/library/nginx:latest` |
+| **Docker Auth** | `/dockerauth/` | `github.sky1218.com/dockerauth/...` |
+| **Docker Hub API** | `/dockerhub/` | `github.sky1218.com/dockerhub/v2/...` |
 
 
 ### Examples
@@ -135,6 +138,21 @@ curl https://github.sky1218.com/api/users/username
 
 ```bash
 curl https://github.sky1218.com/raw/user/repo/main/README.md
+```
+</details>
+
+<details>
+<summary><b>🐋 Docker Pull (Docker Hub)</b></summary>
+
+```bash
+# Configure Docker daemon (add to /etc/docker/daemon.json)
+{
+  "registry-mirrors": ["https://github.sky1218.com/docker"]
+}
+
+# Or pull directly with full path
+docker pull github.sky1218.com/docker/library/nginx:latest
+docker pull github.sky1218.com/docker/library/redis:alpine
 ```
 </details>
 

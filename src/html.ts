@@ -83,6 +83,13 @@ const USAGE_CARDS: UsageCard[] = [
     subtitle: 'Clone with speed',
     command: 'git clone https://github.sky1218.com/github/user/repo.git',
   },
+  {
+    icon: '🐋',
+    title: 'Docker Hub',
+    subtitle: 'Pull Docker images',
+    original: 'docker pull nginx:latest',
+    proxied: 'docker pull github.sky1218.com/docker/library/nginx:latest',
+  },
 ];
 
 const FEATURES: FeatureItem[] = [
@@ -111,6 +118,9 @@ const SUPPORTED_SERVICES: FeatureItem[] = [
   { icon: '🚀', text: '/release - Releases' },
   { icon: '📦', text: '/pkg - NPM Packages' },
   { icon: '🤖', text: '/copilot - Copilot' },
+  { icon: '🐋', text: '/docker - Docker Hub' },
+  { icon: '🔑', text: '/dockerauth - Docker Auth' },
+  { icon: '🌐', text: '/dockerhub - Hub API' },
 ];
 
 
