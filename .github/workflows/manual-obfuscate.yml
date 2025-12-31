@@ -99,6 +99,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Download obfuscated artifact
         uses: actions/download-artifact@v4
@@ -115,9 +117,13 @@ jobs:
           echo "" >> worker.js
           cat obfuscated/index.js >> worker.js
 
-      - name: Commit obfuscated worker
+      - name: Commit and push obfuscated worker
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add worker.js
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update obfuscated worker [skip ci]" && git push)
+          if ! git diff --quiet && git diff --staged --quiet; then
+            git commit -m "chore: update obfuscated worker [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          fi
