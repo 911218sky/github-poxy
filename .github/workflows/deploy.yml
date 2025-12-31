@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers
+name: Build, Deploy and Commit
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 jobs:
@@ -43,3 +43,46 @@ jobs:
           npx wrangler deploy obfuscated/index.js
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  commit-worker:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Commit Obfuscated Worker
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download obfuscated artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: obfuscated-worker
+          path: obfuscated
+
+      - name: Download minified HTML artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: minified-html
+          path: public-min
+
+      - name: Create standalone worker file
+        run: |
+          echo "// Obfuscated GitHub Proxy Worker" > worker.js
+          echo "// Generated on: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> worker.js
+          echo "// Repository: https://github.com/${{ github.repository }}" >> worker.js
+          echo "// Copy this file content to Cloudflare Workers dashboard" >> worker.js
+          echo "" >> worker.js
+          cat obfuscated/index.js >> worker.js
+
+      - name: Copy minified HTML to public
+        run: |
+          cp public-min/index.html public/index.min.html
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add worker.js public/index.min.html
+          git diff --staged --quiet || (git commit -m "chore: update obfuscated worker and minified HTML [skip ci]" && git pull --rebase origin main && git push origin main)
