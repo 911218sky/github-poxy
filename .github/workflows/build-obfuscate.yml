@@ -37,20 +37,18 @@ jobs:
           javascript-obfuscator dist/index.js \
             --output obfuscated/index.js \
             --compact true \
-            --control-flow-flattening true \
-            --control-flow-flattening-threshold 0.75 \
-            --dead-code-injection true \
-            --dead-code-injection-threshold 0.4 \
+            --control-flow-flattening false \
+            --dead-code-injection false \
             --debug-protection false \
             --disable-console-output false \
             --identifier-names-generator hexadecimal \
             --log false \
             --rename-globals false \
-            --self-defending true \
+            --self-defending false \
             --string-array true \
             --string-array-encoding 'base64' \
-            --string-array-threshold 0.75 \
-            --transform-object-keys true \
+            --string-array-threshold 0.5 \
+            --transform-object-keys false \
             --unicode-escape-sequence false
 
       - name: Upload obfuscated artifact
