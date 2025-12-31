@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Generate Obfuscated Worker
 
 on:
   push:
@@ -12,84 +12,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    name: Build and Obfuscate
-    outputs:
-      obfuscated-path: obfuscated/index.js
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build TypeScript
-        run: npx wrangler deploy --dry-run --outdir=dist
-
-      - name: Install obfuscator
-        run: npm install -g javascript-obfuscator
-
-      - name: Obfuscate JavaScript
-        run: |
-          mkdir -p obfuscated
-          javascript-obfuscator dist/index.js \
-            --output obfuscated/index.js \
-            --compact true \
-            --control-flow-flattening true \
-            --control-flow-flattening-threshold 0.75 \
-            --dead-code-injection true \
-            --dead-code-injection-threshold 0.4 \
-            --debug-protection false \
-            --disable-console-output false \
-            --identifier-names-generator hexadecimal \
-            --log false \
-            --rename-globals false \
-            --self-defending true \
-            --string-array true \
-            --string-array-encoding 'base64' \
-            --string-array-threshold 0.75 \
-            --transform-object-keys true \
-            --unicode-escape-sequence false
-
-      - name: Upload obfuscated artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: obfuscated-worker
-          path: obfuscated/index.js
-          retention-days: 1
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Workers
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download obfuscated artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: obfuscated-worker
-          path: obfuscated
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Deploy to Cloudflare
-        run: |
-          cat obfuscated/index.js | npx wrangler deploy --stdin
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    uses: ./.github/workflows/build-obfuscate.yml
 
   commit-worker:
     needs: build
