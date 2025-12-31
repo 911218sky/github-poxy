@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers
+name: Build and Deploy
 
 on:
   push:
@@ -7,12 +7,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  actions: read
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Workers
+    name: Build and Obfuscate
+    outputs:
+      obfuscated-path: obfuscated/index.js
     
     steps:
       - name: Checkout code
@@ -55,8 +58,67 @@ jobs:
             --transform-object-keys true \
             --unicode-escape-sequence false
 
-      - name: Deploy obfuscated worker to Cloudflare
+      - name: Upload obfuscated artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: obfuscated-worker
+          path: obfuscated/index.js
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Workers
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download obfuscated artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: obfuscated-worker
+          path: obfuscated
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Deploy to Cloudflare
         run: |
           cat obfuscated/index.js | npx wrangler deploy --stdin
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+  commit-worker:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Commit Obfuscated Worker
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download obfuscated artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: obfuscated-worker
+          path: obfuscated
+
+      - name: Create standalone worker file
+        run: |
+          echo "// Obfuscated GitHub Proxy Worker" > worker.js
+          echo "// Generated on: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> worker.js
+          echo "// Repository: https://github.com/${{ github.repository }}" >> worker.js
+          echo "// Copy this file content to Cloudflare Workers dashboard" >> worker.js
+          echo "" >> worker.js
+          cat obfuscated/index.js >> worker.js
+
+      - name: Commit obfuscated worker
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add worker.js
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update obfuscated worker [skip ci]" && git push)
+
