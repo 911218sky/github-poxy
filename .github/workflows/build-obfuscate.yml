@@ -57,3 +57,24 @@ jobs:
           name: obfuscated-worker
           path: obfuscated/index.js
           retention-days: 1
+
+      - name: Minify HTML
+        run: |
+          npm install -g html-minifier-terser
+          mkdir -p public-min
+          html-minifier-terser public/index.html \
+            --collapse-whitespace \
+            --remove-comments \
+            --remove-redundant-attributes \
+            --remove-script-type-attributes \
+            --remove-style-link-type-attributes \
+            --minify-css true \
+            --minify-js true \
+            -o public-min/index.html
+
+      - name: Upload minified HTML artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: minified-html
+          path: public-min/index.html
+          retention-days: 1

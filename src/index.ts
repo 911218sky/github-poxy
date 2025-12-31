@@ -29,7 +29,8 @@ export default {
     }
     
     if (url.pathname === '/' || url.pathname === '') {
-      return new Response(getUsageHTML(), {
+      const html = await getUsageHTML();
+      return new Response(html, {
         headers: { 'Content-Type': 'text/html; charset=utf-8' }
       });
     }

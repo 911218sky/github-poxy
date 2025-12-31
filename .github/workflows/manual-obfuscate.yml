@@ -31,6 +31,12 @@ jobs:
           name: obfuscated-worker
           path: obfuscated
 
+      - name: Download minified HTML artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: minified-html
+          path: public-min
+
       - name: Create standalone worker file
         run: |
           echo "// Obfuscated GitHub Proxy Worker" > worker.js
@@ -40,13 +46,17 @@ jobs:
           echo "" >> worker.js
           cat obfuscated/index.js >> worker.js
 
+      - name: Copy minified HTML to public
+        run: |
+          cp public-min/index.html public/index.min.html
+
       - name: Commit and push obfuscated worker
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add worker.js
+          git add worker.js public/index.min.html
           if ! git diff --quiet && git diff --staged --quiet; then
-            git commit -m "chore: update obfuscated worker [skip ci]"
+            git commit -m "chore: update obfuscated worker and minified HTML [skip ci]"
             git pull --rebase origin main
             git push origin main
           fi
