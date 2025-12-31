@@ -6,3 +6,4 @@ obfuscated/
 *.log
 .DS_Store
 .kiro
+.vscode
