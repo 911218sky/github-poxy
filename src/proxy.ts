@@ -3,7 +3,6 @@ import { PROXY_TARGETS } from './config';
 // Docker Registry v2 路徑映射
 const DOCKER_V2_ROUTES: Record<string, string> = {
   'ghcr': 'https://ghcr.io',
-  'docker': 'https://registry-1.docker.io',
 };
 
 export function parseTargetUrl(url: URL): string | null {
@@ -104,12 +103,6 @@ function rewriteWwwAuthenticate(header: string, requestUrl: string): string {
     `realm="${proxyBase}/ghcr/token"`
   );
   
-  // 替換 Docker Hub 認證
-  rewritten = rewritten.replace(
-    /realm="https:\/\/auth\.docker\.io\/token"/g,
-    `realm="${proxyBase}/dockerauth/token"`
-  );
-  
   return rewritten;
 }
 
@@ -121,8 +114,6 @@ function rewriteLocation(location: string, requestUrl: string): string {
   // 替換各種 GitHub/Docker 域名
   const replacements: Record<string, string> = {
     'https://ghcr.io': `${proxyBase}/ghcr`,
-    'https://registry-1.docker.io': `${proxyBase}/docker`,
-    'https://auth.docker.io': `${proxyBase}/dockerauth`,
     'https://github.com': `${proxyBase}/github`,
     'https://raw.githubusercontent.com': `${proxyBase}/raw`,
   };
