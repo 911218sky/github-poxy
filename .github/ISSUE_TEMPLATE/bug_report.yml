@@ -1,0 +1,176 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        
+        Thanks for taking the time to report a bug! Please fill out the form below to help us investigate.
+        
+        ---
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ Pre-submission Checklist
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported
+          required: true
+        - label: I have tested with the latest version
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe the bug in detail...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Send request to '...'
+        2. With headers '...'
+        3. See error '...'
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ Expected Behavior
+      description: What you expected to happen
+      placeholder: It should return...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: ❌ Actual Behavior
+      description: What actually happened
+      placeholder: Instead, it returned...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: route
+    attributes:
+      label: 🛣️ Affected Route
+      description: Which proxy route is affected?
+      multiple: true
+      options:
+        - /github/ (Repository)
+        - /raw/ (Raw Files)
+        - /release/ (Releases)
+        - /api/ (GitHub API)
+        - /gist/ (Gist)
+        - /ghcr/ (Container Registry)
+        - /codeload/ (ZIP Download)
+        - /avatars/ (Avatars)
+        - /objects/ (Git Objects)
+        - /media/ (Media)
+        - /assets/ (Assets)
+        - /archive/ (Archive)
+        - /pkg/ (NPM Package)
+        - /copilot/ (Copilot)
+        - Landing Page
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 🔥 Severity
+      description: How severe is this bug?
+      options:
+        - 🟢 Low - Minor issue, workaround available
+        - 🟡 Medium - Affects functionality but not critical
+        - 🟠 High - Major feature broken
+        - 🔴 Critical - Service completely unusable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: client
+    attributes:
+      label: 🌐 Client/Browser
+      description: What client are you using?
+      multiple: true
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - curl
+        - wget
+        - git CLI
+        - docker CLI
+        - Postman
+        - Node.js fetch
+        - Python requests
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 🔗 Request URL
+      description: The full URL you were trying to access
+      placeholder: https://your-proxy.workers.dev/github/user/repo
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 Error Logs / Response
+      description: Any error messages, response headers, or logs
+      render: shell
+      placeholder: |
+        HTTP/2 500
+        content-type: text/plain
+        
+        Error: ...
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 💻 Environment
+      description: Your environment details
+      placeholder: |
+        - OS: Windows 11 / macOS 14 / Ubuntu 22.04
+        - Node.js: v20.x (if applicable)
+        - Region: US / EU / Asia
+      value: |
+        - OS: 
+        - Region: 
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 📎 Additional Context
+      description: Any other context, screenshots, or related issues
+      placeholder: Add any other context about the problem here...
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: 🤝 Contribution
+      description: Would you like to help fix this bug?
+      options:
+        - label: I'm willing to submit a PR to fix this issue

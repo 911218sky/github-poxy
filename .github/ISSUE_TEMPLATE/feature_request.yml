@@ -1,0 +1,135 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ Feature Request
+        
+        Thanks for suggesting a feature! Your ideas help make this project better.
+        
+        ---
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ Pre-submission Checklist
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested
+          required: true
+        - label: This feature aligns with the project's goals
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: 🏷️ Feature Type
+      description: What type of feature is this?
+      options:
+        - 🛣️ New Proxy Route
+        - ⚡ Performance Improvement
+        - 🔒 Security Enhancement
+        - 🎨 UI/Landing Page
+        - 📝 Documentation
+        - 🔧 Developer Experience
+        - 🐳 Docker/Container Support
+        - 🌐 CORS/Headers
+        - 📊 Monitoring/Logging
+        - 🔌 API Enhancement
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 📊 Priority
+      description: How important is this feature to you?
+      options:
+        - 🟢 Nice to have
+        - 🟡 Would improve workflow
+        - 🟠 Important for my use case
+        - 🔴 Critical / Blocking
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🤔 Problem Statement
+      description: What problem does this feature solve? Why do you need it?
+      placeholder: |
+        I'm always frustrated when...
+        Currently, I have to...
+        This would help because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💡 Proposed Solution
+      description: Describe the solution you'd like
+      placeholder: |
+        I would like to see...
+        It should work by...
+        The expected behavior would be...
+    validations:
+      required: true
+
+  - type: textarea
+    id: api
+    attributes:
+      label: 🔌 API / Usage Example
+      description: If applicable, show how this feature would be used
+      render: bash
+      placeholder: |
+        # Example usage
+        curl https://proxy.example.com/new-route/path
+        
+        # Expected response
+        HTTP/2 200
+        ...
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives Considered
+      description: Any alternative solutions or workarounds you've considered
+      placeholder: |
+        I've tried...
+        Another approach could be...
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: ⚠️ Breaking Change
+      description: Would this feature require breaking changes?
+      options:
+        - "No - Fully backward compatible"
+        - "Maybe - Might affect some edge cases"
+        - "Yes - Would require migration"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 📎 Additional Context
+      description: Any other context, mockups, screenshots, or references
+      placeholder: |
+        Related issues: #123
+        Similar implementation: https://...
+        Screenshots: ...
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: 🤝 Contribution
+      description: Would you like to help implement this feature?
+      options:
+        - label: I'm willing to submit a PR to implement this feature

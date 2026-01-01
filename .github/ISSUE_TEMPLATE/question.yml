@@ -1,0 +1,68 @@
+name: ❓ Question
+description: Ask a question about usage or implementation
+title: "[Question]: "
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ❓ Question
+        
+        Have a question? We're here to help!
+        
+        > 💡 **Tip:** Check the [README](https://github.com/911218sky/github-poxy#readme) first - your answer might be there!
+        
+        ---
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 🏷️ Question Category
+      description: What is your question about?
+      options:
+        - 🚀 Deployment / Setup
+        - 📖 Usage / How-to
+        - 🔧 Configuration
+        - 🐳 Docker / Container Registry
+        - 🔒 Security / Authentication
+        - ⚡ Performance
+        - 🌐 CORS / Headers
+        - 💻 Development / Contributing
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 📝 Your Question
+      description: What would you like to know?
+      placeholder: How do I...? Why does...? What is the best way to...?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 📋 Context
+      description: Any relevant context that might help us answer your question
+      placeholder: |
+        I'm trying to...
+        My setup is...
+        I've already tried...
+
+  - type: textarea
+    id: code
+    attributes:
+      label: 💻 Code / Commands
+      description: Any relevant code or commands you've tried
+      render: bash
+
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: 🔍 Research Done
+      options:
+        - label: I have read the README documentation
+        - label: I have searched existing issues for similar questions
