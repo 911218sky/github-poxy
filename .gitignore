@@ -5,5 +5,4 @@ obfuscated/
 .dev.vars
 *.log
 .DS_Store
-.kiro
 .vscode
