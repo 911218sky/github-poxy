@@ -87,6 +87,9 @@ You can also manually trigger deployment from the Actions tab.
 | **Archive** | `/archive/` | `your-domain.com/archive/user/repo/archive/main.zip` |
 | **NPM Pkg** | `/pkg/` | `your-domain.com/pkg/...` |
 | **Copilot** | `/copilot/` | `your-domain.com/copilot/...` |
+| **ModelScope** | `/modelscope/` | `your-domain.com/modelscope/models/damo/text-to-video` |
+| **ModelScope API** | `/modelscope-api/` | `your-domain.com/modelscope-api/v1/models` |
+| **ModelScope Models** | `/modelscope-models/` | `your-domain.com/modelscope-models/damo/text-to-video` |
 
 ### Examples
 
