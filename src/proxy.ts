@@ -111,11 +111,13 @@ function rewriteLocation(location: string, requestUrl: string): string {
   const proxyUrl = new URL(requestUrl);
   const proxyBase = `${proxyUrl.protocol}//${proxyUrl.host}`;
   
-  // 替換各種 GitHub/Docker 域名
+  // 替換各種 GitHub/Docker/ModelScope 域名
   const replacements: Record<string, string> = {
     'https://ghcr.io': `${proxyBase}/ghcr`,
     'https://github.com': `${proxyBase}/github`,
     'https://raw.githubusercontent.com': `${proxyBase}/raw`,
+    'https://www.modelscope.cn': `${proxyBase}/modelscope`,
+    'https://modelscope.cn': `${proxyBase}/modelscope`,
   };
   
   let rewritten = location;

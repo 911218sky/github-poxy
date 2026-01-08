@@ -14,4 +14,8 @@ export const PROXY_TARGETS: Record<string, string> = {
   'release': 'https://github.com',
   'pkg': 'https://npm.pkg.github.com',
   'copilot': 'https://copilot-proxy.githubusercontent.com',
+  // ModelScope related URLs
+  'modelscope': 'https://www.modelscope.cn',
+  'modelscope-api': 'https://modelscope.cn/api',
+  'modelscope-models': 'https://modelscope.cn/models',
 };
